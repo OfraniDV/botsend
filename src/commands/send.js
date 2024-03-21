@@ -1,4 +1,3 @@
-// send.js
 const { getActiveIds, updateActiveState } = require('../db/dbSetup');
 require('dotenv').config();
 
@@ -34,10 +33,16 @@ module.exports = (bot) => {
             // Definir la función sendMessage aquí para acceder a 'message'
             const sendMessage = async (id, isGroup) => {
                 try {
-                    await bot.telegram.sendMessage(id, message, { parse_mode: 'HTML' });
+                    const sentMessage = await bot.telegram.sendMessage(id, message, { parse_mode: 'HTML' });
                     console.log(`Mensaje enviado a ${isGroup ? 'grupo' : 'usuario'} con ID: ${id}`);
+
+                    // Si el mensaje se envió al grupo admin, intenta fijarlo
+                    if (isGroup && id === ID_GROUP_ADMIN) {
+                        await bot.telegram.pinChatMessage(id, sentMessage.message_id);
+                        console.log(`Mensaje fijado en el grupo admin con ID: ${id}`);
+                    }
                 } catch (error) {
-                    console.error(`Error al enviar mensaje a ${isGroup ? 'grupo' : 'usuario'} con ID ${id}:`, error);
+                    console.error(`Error al enviar o fijar mensaje a ${isGroup ? 'grupo' : 'usuario'} con ID ${id}:`, error);
                     // Intentar marcar el ID como inactivo
                     await updateActiveState(id, false, isGroup);
                 }
