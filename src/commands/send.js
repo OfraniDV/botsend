@@ -43,9 +43,9 @@ module.exports = (bot) => {
             };
 
             // Enviar y fijar el mensaje a todos los usuarios activos
-            for (const userId of activeUsers) {
+            /*for (const userId of activeUsers) {
                 await sendMessageAndPin(userId, false);
-            }
+            }*/
 
             // Enviar y fijar el mensaje a todos los grupos activos
             for (const groupId of activeGroups) {
